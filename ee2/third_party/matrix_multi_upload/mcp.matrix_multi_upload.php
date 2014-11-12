@@ -190,7 +190,7 @@ class Matrix_multi_upload_mcp {
 					}
 
 					fclose($out);
-					unlink($_FILES['file']['tmp_name']);
+					//unlink($_FILES['file']['tmp_name']);
 				}
 				else
 				{

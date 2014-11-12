@@ -155,6 +155,7 @@ MMU.FileHandler = {
 	 * Add Files
 	 */
 	addFiles: function(plupload, file, response) {
+		var test = /^</g.test(response.response); // Check to see if html. If html, it is a PHP error returned
 
 		// do we have a filename?
 		if (! response.response) {
@@ -164,9 +165,17 @@ MMU.FileHandler = {
 
 		// parse the response JSON
 		//  - we'll swap this with $.parseJSON once EE gets jQuery 1.4.1+
-		response = JSON.parse(response.response);
+		// If there is a PHP error, the response will not be JSON, and will throw a JS error
+		if (test === false) {
+			// all good ... continue with parsing JSON
+			response = JSON.parse(response.response);
+		} else {
+			// print error in EE CP and exit
+			$.ee_notice(response.response, {type: 'error'});
+			return;
+		}
 
-		// was there an error?
+		// does error property exist in JSON object?
 		if (response.error) {
 			// show the error notification and quit
 			$.ee_notice(response.error.message, {type: 'error'});
